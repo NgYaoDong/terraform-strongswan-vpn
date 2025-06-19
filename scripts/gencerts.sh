@@ -38,7 +38,7 @@ for i in $(seq 1 "$num_clients"); do
         --outform pem > "$cert_file"
 
     echo "  Copying client certificate and key to client${i} directory..."
-    client="client$i"
+    client="clients/client${i}"
     # Copy the generated key to the respective client directories
     if [ -d "$client/private" ]; then
         cp "$key_file" "$client/private/"
@@ -83,7 +83,7 @@ for i in $(seq 1 "$num_gateways"); do
         --outform pem > "$cert_file"
 
     echo "  Copying gateway certificate and key to gateway${i} directory..."
-    gateway="gateway$i"
+    gateway="gateways/gateway${i}"
     # Copy the generated key to the respective gateway directories
     if [ -d "$gateway/private" ]; then
         cp "$key_file" "$gateway/private/"

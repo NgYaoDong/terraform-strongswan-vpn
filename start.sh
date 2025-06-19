@@ -1,16 +1,19 @@
 #!/bin/bash
 set -e  # Exit immediately if a command exits with a non-zero status
 
+# Setting the working directory to the scripts directory
+dir="scripts/"
+
 echo "Initializing directory structure and generating CA key and certificate..."
-bash gendir.sh
+bash "$dir/gendir.sh"
 echo "Directory structure initialized."
 
 echo "Generating CA key and certificate..."
-bash genca.sh
+bash "$dir/genca.sh"
 echo "CA key and certificate generated."
 
 echo "Generating client and gateway certificates..."
-bash gencerts.sh
+bash "$dir/gencerts.sh"
 echo "Client and gateway certificates generated."
 
 echo "Initialization complete. All directories and certificates are set up."
