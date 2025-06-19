@@ -38,60 +38,59 @@ resource "docker_image" "strongswan" {
   keep_locally = true
 }
 
-# Variable to define the number of clients and their names
-# This can be adjusted to create more or fewer clients as needed
-variable "client_names" {
-  description = "List of client container names to create."
-  type        = list(string)
-  default     = [for i in range(1, 101) : "client${i}"] # Creates client1 to client100
+# Define variables for the number of clients and gateways
+variable "num_clients" {
+  type = number
+}
+
+variable "num_gateways" {
+  type = number
+}
+
+# Define local variables to create client and gateway names dynamically
+# This allows us to create client1, client2, ..., gateway1, gateway2, etc.
+# The range function generates a list of numbers from 1 to num_clients or num_gateways
+locals {
+  client_names  = [for i in range(1, var.num_clients + 1) : "client${i}"] # Creates client1, client2, ...
+  gateway_names = [for i in range(1, var.num_gateways + 1) : "gateway${i}"] # Creates gateway1, gateway2, ...
 }
 
 # Configure the client container
 resource "docker_container" "client" {
-  for_each   = toset(var.client_names)
+  for_each   = toset(local.client_names)
   name       = each.key
   image      = docker_image.strongswan.image_id
   privileged = true # Required for us to run "ipsec start" then use swanctl, equivalent to --privileged in docker run
   env = ["ROLE=client"] # Set environment variable to indicate the role of the container
 
   volumes {
-    # Path of client certs and swanctl.conf in the local machine
-    host_path      = "./scripts/clients/${each.key}"
+    host_path      = "/home/ubdesk/Desktop/terraform-test/strongswan-test/clients/${each.key}" # Path of client certs and swanctl.conf in the local machine (MUST BE absolute path)
     container_path = "/etc/swanctl" # Path of certs and config file for the container
   }
 
   networks_advanced {
     name         = docker_network.internet.name
-    ipv4_address = "192.168.138.${128 + index(var.client_names, each.key)}" # Setting Internet static IP address for each container
+    ipv4_address = "192.168.138.${128 + index(local.client_names, each.key)}" # Setting Internet static IP address for each container
   }
   # command = ["tail", "-f", "/dev/null"]
 }
 
-# Variable to define the number of gateways and their names
-# This can be adjusted to create more or fewer gateways as needed
-variable "gateway_names" {
-  description = "List of gateway container names to create."
-  type        = list(string)
-  default     = [for i in range(1, 3) : "gateway${i}"] # Creates gateway1, gateway2
-}
-
 # Configure the gateway containers
 resource "docker_container" "gateway" {
-  for_each   = toset(var.gateway_names)
+  for_each   = toset(local.gateway_names)
   name       = each.key
   image      = docker_image.strongswan.image_id
   privileged = true # Required for us to run "ipsec start" then use swanctl, equivalent to --privileged in docker run
   env = ["ROLE=gateway"] # Set environment variable to indicate the role of the container
 
   volumes {
-    # Path of gateway certs and swanctl.conf in the local machine
-    host_path      = "./scripts/gateways/${each.key}"
+    host_path      = "/home/ubdesk/Desktop/terraform-test/strongswan-test/gateways/${each.key}" # Path of gateway certs and swanctl.conf in the local machine (MUST BE absolute path)
     container_path = "/etc/swanctl" # Path of certs and config file for the container
   }
 
   networks_advanced {
     name         = docker_network.internet.name
-    ipv4_address = "192.168.138.${129 + index(var.gateway_names, each.key)}" # Setting Internet static IP address for each container
+    ipv4_address = "192.168.138.${140 + index(var.gateway_names, each.key)}" # Setting Internet static IP address for each container
   }
   networks_advanced {
     name         = docker_network.intranet.name

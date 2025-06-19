@@ -2,8 +2,8 @@
 set -e  # Exit immediately if a command exits with a non-zero status
 
 # Number of client and gateway directories to generate
-num_clients=3    # Number of client directories to create
-num_gateway=1    # Number of gateway directories to create
+# num_clients=3    # Number of client directories to create
+# num_gateways=1    # Number of gateway directories to create
 
 # Subdirectories to create within each parent directory
 subdirs=("bliss" "ecdsa" "pkcs12" "pkcs8" "private" "pubkey" "rsa" "x509" "x509aa" "x509ac" "x509ca" "x509crl" "x509ocsp")
@@ -30,7 +30,7 @@ for i in $(seq 1 "$num_clients"); do
 done
 
 # Loop through each parent gateway directory
-for i in $(seq 1 "$num_gateway"); do
+for i in $(seq 1 "$num_gateways"); do
     parent="gateways/gateway$i"  # Name of the gateway directory (e.g., gateways/gateway1)
     echo "Creating parent directory: $parent"
     mkdir -p "$parent"  # Create the gateway directory if it doesn't exist
@@ -45,4 +45,4 @@ done
 
 # Print completion message
 echo "Directory generation complete."
-echo "Created $num_clients client directories and $num_gateway gateway directories."
+echo "Created $num_clients client directories and $num_gateways gateway directories."

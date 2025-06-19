@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e  # Exit immediately if a command exits with a non-zero status
 
-num_clients=3    # Number of client directories to create
-num_gateways=1   # Number of gateway directories to create
+# num_clients=3    # Number of client directories to create
+# num_gateways=1   # Number of gateway directories to create
 ca_key="certs/ca/caKey.pem"  # Path to CA private key
 ca_cert="certs/ca/caCert.pem"  # Path to CA certificate
 
@@ -37,7 +37,7 @@ for i in $(seq 1 "$num_clients"); do
         --type pkcs10 --in "$req_file" --serial 01 --lifetime 1826 \
         --outform pem > "$cert_file"
 
-    echo "  Copying client certificate and key to client${i} directory..."
+    echo "  Copying client certificate, key and config to client${i} directory..."
     client="clients/client${i}"
     # Copy the generated key to the respective client directories
     if [ -d "$client/private" ]; then
@@ -49,6 +49,10 @@ for i in $(seq 1 "$num_clients"); do
         cp "$cert_file" "$client/x509/"
         echo "  Copied client${i}Cert.pem to $client/x509/"
     fi
+    # Copy the config file to the respective client directories
+    config_file="conf/client${i}/swanctl.conf"
+    cp "$config_file" "$client/"
+    echo "  Copied swanctl.conf to $client..."
 done
 
 # Create gateway directories under certs/ and generate keys, requests, and certs
@@ -82,7 +86,7 @@ for i in $(seq 1 "$num_gateways"); do
         --type pkcs10 --in "$req_file" --serial 01 --lifetime 1826 \
         --outform pem > "$cert_file"
 
-    echo "  Copying gateway certificate and key to gateway${i} directory..."
+    echo "  Copying gateway certificate, key and config to gateway${i} directory..."
     gateway="gateways/gateway${i}"
     # Copy the generated key to the respective gateway directories
     if [ -d "$gateway/private" ]; then
@@ -94,6 +98,10 @@ for i in $(seq 1 "$num_gateways"); do
         cp "$cert_file" "$gateway/x509/"
         echo "  Copied gateway${i}Cert.pem to $gateway/x509/"
     fi
+    # Copy the config file to the respective gateway directories
+    config_file="conf/gateway${i}/swanctl.conf"
+    cp "$config_file" "$gateway/"
+    echo "  Copied swanctl.conf to $gateway..."
 done
 
 # Print completion message
