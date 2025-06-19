@@ -24,7 +24,7 @@ pki --self --ca --lifetime 3652 --in $key_file \
            --outform pem > $cert_file
 
 # Copy caCert.pem into all x509ca directories under clients and gateways
-for dir in "clients/client*" "gateways/gateway*"; do
+for dir in clients/client* gateways/gateway*; do
     if [ -d "$dir/x509ca" ]; then
         cp $cert_file "$dir/x509ca/"
         echo "Copied caCert.pem to $dir/x509ca/"
