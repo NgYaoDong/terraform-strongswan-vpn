@@ -90,11 +90,11 @@ resource "docker_container" "gateway" {
 
   networks_advanced {
     name         = docker_network.internet.name
-    ipv4_address = "192.168.138.${140 + index(var.gateway_names, each.key)}" # Setting Internet static IP address for each container
+    ipv4_address = "192.168.138.${140 + index(local.gateway_names, each.key)}" # Setting Internet static IP address for each container
   }
   networks_advanced {
     name         = docker_network.intranet.name
-    ipv4_address = "192.168.162.${134 + index(var.gateway_names, each.key)}" # Setting Intranet static IP address for each container
+    ipv4_address = "192.168.162.${134 + index(local.gateway_names, each.key)}" # Setting Intranet static IP address for each container
   }
   # command = ["tail", "-f", "/dev/null"]
 }

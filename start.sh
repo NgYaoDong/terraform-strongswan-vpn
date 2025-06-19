@@ -14,8 +14,10 @@ read -r menu_choice
 case "$menu_choice" in
     1)
         echo "Spinning up the VPN network..."
+        set -a # Automatically export all variables defined in the script
         read -p "Enter the number of clients to create: " num_clients
         read -p "Enter the number of gateways to create: " num_gateways
+        set +a # Stop automatically exporting variables
         
         # Writing the number of clients and gateways to custom.auto.tfvars
         echo "Setting up custom.auto.tfvars with the number of clients and gateways..."
