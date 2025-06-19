@@ -3,7 +3,7 @@ set -e  # Exit immediately if a command exits with a non-zero status
 
 # Menu for managing the VPN network with Terraform
 
-echo "\n==== VPN Network Menu ===="
+echo "==== VPN Network Menu ===="
 echo "1) Spin up the VPN network"
 echo "2) Tear Down the VPN network"
 echo "3) Exit"
@@ -60,7 +60,7 @@ case "$menu_choice" in
     2)
         echo "Spinning down the VPN network..."
         terraform destroy -auto-approve -var-file=custom.auto.tfvars
-        
+
         echo "Do you want to clean up the client and gateway directories? ([y]es/[n]o)"
         read -r response
         if [[ "$response" == "yes" || -z "$response" || "$response" == "y" ]]; then
