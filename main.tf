@@ -52,6 +52,7 @@ resource "docker_container" "client" {
   name       = each.key
   image      = docker_image.strongswan.image_id
   privileged = true # Required for us to run "ipsec start" then use swanctl, equivalent to --privileged in docker run
+  env = ["ROLE=client"] # Set environment variable to indicate the role of the container
 
   volumes {
     # Path of client certs and swanctl.conf in the local machine
@@ -80,6 +81,7 @@ resource "docker_container" "gateway" {
   name       = each.key
   image      = docker_image.strongswan.image_id
   privileged = true # Required for us to run "ipsec start" then use swanctl, equivalent to --privileged in docker run
+  env = ["ROLE=gateway"] # Set environment variable to indicate the role of the container
 
   volumes {
     # Path of gateway certs and swanctl.conf in the local machine
