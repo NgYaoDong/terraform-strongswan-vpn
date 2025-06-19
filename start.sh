@@ -25,8 +25,8 @@ case "$menu_choice" in
         # Setting the working directory to the scripts directory
         dir="scripts/"
         
-        # Initialization steps (directory and cert generation)
-        echo "Initializing directory structure and generating CA key and certificate..."
+        # Initialisation steps (directory and cert generation)
+        echo "Initialising directory structure and generating CA key and certificate..."
         bash "$dir/gendir.sh"
         echo "Directory structure initialized."
         
@@ -38,7 +38,7 @@ case "$menu_choice" in
         bash "$dir/gencerts.sh"
         echo "Client and gateway certificates generated."
         
-        echo "Initialization complete. All $num_clients client and $num_gateways gateway directories are set up with certificates within them."
+        echo "Initialisation complete. All $num_clients client and $num_gateways gateway directories are set up with certificates within them."
         
         echo "Do you want to clean up the cert directories? ([y]es/[n]o)"
         read -r response
@@ -49,6 +49,10 @@ case "$menu_choice" in
         else
             echo "Directories retained. You can find the certificates in the certs/ directory."
         fi
+
+        # Spinning up the VPN network with Terraform
+        echo "Spinning up the VPN network with Terraform..."
+        # Initialize and apply Terraform configuration
         terraform init
         terraform apply -auto-approve -var-file=custom.auto.tfvars
         echo "VPN network spun up."
@@ -56,6 +60,7 @@ case "$menu_choice" in
     2)
         echo "Spinning down the VPN network..."
         terraform destroy -auto-approve -var-file=custom.auto.tfvars
+        
         echo "Do you want to clean up the client and gateway directories? ([y]es/[n]o)"
         read -r response
         if [[ "$response" == "yes" || -z "$response" || "$response" == "y" ]]; then
