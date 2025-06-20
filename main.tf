@@ -47,12 +47,13 @@ variable "num_gateways" {
   type = number
 }
 
-# Define local variables to create client and gateway names dynamically
-# This allows us to create client1, client2, ..., gateway1, gateway2, etc.
-# The range function generates a list of numbers from 1 to num_clients or num_gateways
+# Define local variables for client and gateway names, and the current directory
+# The client and gateway names are generated based on the number of clients and gateways specified in the variables.
+# The current directory is used to specify the path for the volumes in the docker containers.
 locals {
   client_names  = [for i in range(1, var.num_clients + 1) : "client${i}"] # Creates client1, client2, ...
   gateway_names = [for i in range(1, var.num_gateways + 1) : "gateway${i}"] # Creates gateway1, gateway2, ...
+  current_dir  = abspath(path.module) # Get the absolute path of the current directory
 }
 
 # Configure the client container
@@ -64,7 +65,7 @@ resource "docker_container" "client" {
   env = ["ROLE=client"] # Set environment variable to indicate the role of the container
 
   volumes {
-    host_path      = "/home/ubdesk/Desktop/terraform-test/strongswan-test/clients/${each.key}" # Path of client certs and swanctl.conf in the local machine (MUST BE absolute path)
+    host_path      = "${local.current_dir}/clients/${each.key}" # Path of client certs and swanctl.conf in the local machine (MUST BE absolute path)
     container_path = "/etc/swanctl" # Path of certs and config file for the container
   }
 
@@ -84,7 +85,7 @@ resource "docker_container" "gateway" {
   env = ["ROLE=gateway"] # Set environment variable to indicate the role of the container
 
   volumes {
-    host_path      = "/home/ubdesk/Desktop/terraform-test/strongswan-test/gateways/${each.key}" # Path of gateway certs and swanctl.conf in the local machine (MUST BE absolute path)
+    host_path      = "${local.current_dir}/gateways/${each.key}" # Path of gateway certs and swanctl.conf in the local machine (MUST BE absolute path)
     container_path = "/etc/swanctl" # Path of certs and config file for the container
   }
 
