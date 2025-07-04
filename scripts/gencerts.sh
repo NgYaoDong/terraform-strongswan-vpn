@@ -50,7 +50,7 @@ for i in $(seq 1 "$num_clients"); do
         echo "  Copied client${i}Cert.pem to $client/x509/"
     fi
     # Copy the config file to the respective client directories
-    config_file="conf/client${i}/swanctl.conf"
+    config_file="misc/conf/client${i}/swanctl.conf"
     cp "$config_file" "$client/"
     echo "  Copied swanctl.conf to $client..."
 done
@@ -99,7 +99,7 @@ for i in $(seq 1 "$num_gateways"); do
         echo "  Copied gateway${i}Cert.pem to $gateway/x509/"
     fi
     # Copy the config file to the respective gateway directories
-    config_file="conf/gateway${i}/swanctl.conf"
+    config_file="misc/conf/gateway${i}/swanctl.conf"
     cp "$config_file" "$gateway/"
     echo "  Copied swanctl.conf to $gateway..."
 done

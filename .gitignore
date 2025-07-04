@@ -36,7 +36,3 @@ override.tf.json
 .terraformrc
 terraform.rc
 *.hcl
-
-certs/
-client*/
-gateway*/
