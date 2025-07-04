@@ -1,8 +1,0 @@
-#cloud-config
-ssh_authorized_keys:
-  - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD...your_public_key... user@host
-runcmd:
-  - export ROLE="client"
-  - swanctl --load-all
-  - swanctl --initiate --child home
-  # Add additional client setup here (e.g., fetch certs, configure strongSwan)
