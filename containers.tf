@@ -8,6 +8,8 @@ resource "docker_container" "client" {
   privileged = true            # Required for us to run "ipsec start" then use swanctl, equivalent to --privileged in docker run
   env        = ["ROLE=client"] # Set environment variable to indicate the role of the container
 
+  depends_on = [ docker_container.gateway ]
+
   volumes {
     host_path      = "${local.current_dir}/clients/${each.key}" # Path of client certs and swanctl.conf in the local machine (MUST BE absolute path)
     container_path = "/etc/swanctl"                             # Path of certs and config file for the container
